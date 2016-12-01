@@ -1,2 +1,3 @@
-# sequana.github.io
-resource for the website
+
+
+resource for the website http://sequana.github.io
