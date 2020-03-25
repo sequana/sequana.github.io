@@ -1,1 +1,3 @@
-
+theme: jekyll-theme-cayman
+title: Welcome to Sequana home page
+description: a set of NGS pipelines (sequence analysis)
