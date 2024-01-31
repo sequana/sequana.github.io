@@ -1,0 +1,3560 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <title></title>
+    <link rel="stylesheet" href="dist/reveal.css" />
+    <link rel="stylesheet" href="dist/theme/white.css" id="theme" />
+    <link rel="stylesheet" href="plugin/highlight/zenburn.css" />
+	<link rel="stylesheet" href="css/layout.css" />
+	<link rel="stylesheet" href="plugin/customcontrols/style.css">
+	<link rel="stylesheet" href="plugin/chalkboard/style.css">
+
+	<link rel="stylesheet" href="plugin/reveal-pointer/pointer.css" />
+
+
+    <script defer src="dist/fontawesome/all.min.js"></script>
+
+	<script type="text/javascript">
+		var forgetPop = true;
+		function onPopState(event) {
+			if(forgetPop){
+				forgetPop = false;
+			} else {
+				parent.postMessage(event.target.location.href, "app://obsidian.md");
+			}
+        }
+		window.onpopstate = onPopState;
+		window.onmessage = event => {
+			if(event.data == "reload"){
+				window.document.location.reload();
+			}
+			forgetPop = true;
+		}
+
+		function fitElements(){
+			const itemsToFit = document.getElementsByClassName('fitText');
+			for (const item in itemsToFit) {
+				if (Object.hasOwnProperty.call(itemsToFit, item)) {
+					var element = itemsToFit[item];
+					fitElement(element,1, 1000);
+					element.classList.remove('fitText');
+				}
+			}
+		}
+
+		function fitElement(element, start, end){
+
+			let size = (end + start) / 2;
+			element.style.fontSize = `${size}px`;
+
+			if(Math.abs(start - end) < 1){
+				while(element.scrollHeight > element.offsetHeight){
+					size--;
+					element.style.fontSize = `${size}px`;
+				}
+				return;
+			}
+
+			if(element.scrollHeight > element.offsetHeight){
+				fitElement(element, start, size);
+			} else {
+				fitElement(element, size, end);
+			}		
+		}
+
+
+		document.onreadystatechange = () => {
+			fitElements();
+			if (document.readyState === 'complete') {
+				if (window.location.href.indexOf("?export") != -1){
+					parent.postMessage(event.target.location.href, "app://obsidian.md");
+				}
+				if (window.location.href.indexOf("print-pdf") != -1){
+					let stateCheck = setInterval(() => {
+						clearInterval(stateCheck);
+						window.print();
+					}, 250);
+				}
+			}
+	};
+
+
+        </script>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides"><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-background-image="3-Resources/background/background_dna_digit_orange.png" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 20 20; box-sizing: border-box; opacity: 0.8; border: 4px solid white; position: absolute; left: 17.5%; top: 27.5%; height: 45%; width: 65%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+
+<div class="block">
+
+Sequana and Damona: a duo for reproducible NGS analysis <!-- .element: style="font-size: 46px; color: white" -->
+
+Thomas Cokelaer <!-- .element: style="font-size: 36px; color: white" -->
+
+IP, Paris,  Feb. 2024 <!-- .element: style="font-size: 30px; color: white" -->
+
+</div>
+
+ 
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+</div>
+
+
+ </div>
+
+
+
+
+<img src="3-Resources/Talks/Images/oasis.png" alt="" style="width: 1200px; object-fit: fill">
+
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div>
+
+<aside class="notes"><p>Many papers lack minimal information (data, missing code) required to reproduce their scientific contents. </p>
+<p>This oasis is the nice work that was published. It is great, beautiful, blue sky
+but you you want to come back to it, it is within a desert of information. you can not find it back. you cannot reproduce it. </p>
+<p>bioinformatician tend to redo what others did because there are missing parameters, software vesrion, sometimes even the software so they are redoing things again and again. </p>
+<p>What I will show you today is that there are tools for NGS that allow you to reproduce analysis without these trouble. as you anticipate fro the title, this is the combination of Sequana (NGS software) and Damona (singularity manager)</p>
+<p>You forgot to put the signs to back there. You did not provide the map, the version, the instructions.</p>
+</aside></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Outline
+</div>
+
+
+ </div>
+
+
+
+
+
+<div class="" style="padding: 0 0px; box-sizing: border-box; position: absolute; left: 5%; top: 20%; height: 20%; width: 25%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+<span style="color:blue; "><u>1</u></span><br>
+The Drylab of the Biomics Platform
+</div>
+
+<div class="" style="padding: 0 0px; box-sizing: border-box; position: absolute; left: 38%; top: 20%; height: 20%; width: 25%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+<span style="color:blue; "><u>2</u></span><br>
+Reproducibility: an overview
+</div>
+
+<div class="" style="padding: 0 0px; box-sizing: border-box; position: absolute; left: 70%; top: 20%; height: 20%; width: 25%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+<span style="color:blue; "><u>3</u></span><br>
+Sequana
+</div>
+
+<div class="" style="padding: 0 0px; box-sizing: border-box; position: absolute; left: 20%; top: 50%; height: 40%; width: 25%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+<span style="color:blue; "><u>4</u></span><br>
+Damona
+</div>
+
+<div class="" style="padding: 0 0px; box-sizing: border-box; position: absolute; left: 60%; top: 50%; height: 20%; width: 25%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+<span style="color:blue; "><u>5</u></span><br>
+A duo for reproducibility
+</div>
+
+
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+The Drylab of the Biomics platform
+
+</div>
+
+
+ </div>
+
+
+
+
+<div class="" style="position: absolute; left: -10%; top: 10%; height: 80%; width: 80%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="1-Projects/Talks/2024-01-Sequana_Damona/drylab_drawing.png" alt="" style="width: 600px; object-fit: fill">
+
+</div>
+
+<div class="" style="position: absolute; left: 60%; top: 3%; height: 60%; width: 30%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="1-Projects/Talks/2024-01-Biomics/images/runs_2012_2023.png" alt="" style="width: 500px; object-fit: fill">
+
+</div>
+
+<div class="" style="position: absolute; left: 50%; top: 35%; height: 60%; width: 30%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="2-Areas/Biomics/Images/photo_me.png" alt="" style="width: 120px; object-fit: fill">
+
+</div>
+
+<div class="" style="position: absolute; left: 58%; top: 50%; height: 60%; width: 30%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="2-Areas/Biomics/Images/photo_etienne.png" alt="" style="width: 120px; object-fit: fill">
+
+</div>
+
+<div class="" style="position: absolute; left: 66%; top: 35%; height: 60%; width: 30%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="2-Areas/Biomics/Images/photo_laure.png" alt="" style="width: 120px; object-fit: fill">
+
+</div>
+<div class="" style="position: absolute; left: 74%; top: 50%; height: 60%; width: 30%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="2-Areas/Biomics/Images/photo_rania.png" alt="" style="width: 120px; object-fit: fill">
+
+</div>
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Our Goals and Objectives
+</div>
+
+
+ </div>
+
+
+
+
+<section data-auto-animate>
+  <ul>
+    <li>Handle Users data</li>
+  </ul>
+</section>
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Our Goals and Objectives
+</div>
+
+
+ </div>
+
+
+
+<section data-auto-animate>
+  <ul>
+    <li>Handle Users data</li>
+    <li>Implement Quality Controls</li>
+  </ul>
+</section>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Our Goals and Objectives
+</div>
+
+
+ </div>
+
+
+
+<section data-auto-animate>
+  <ul>
+    <li>Handle Users data</li>
+    <li>Implement Quality Controls</li>
+	<li>Analyses bioinformatics projects</li>
+  </ul>
+</section>
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Our Goals and Objectives
+</div>
+
+
+ </div>
+
+
+
+<section data-auto-animate>
+  <ul>
+    <li>Handle Users data</li>
+    <li>Implement Quality Controls</li>
+    <li>Analyse bioinformatics projects </li>
+    <li>Implement NGS analysis pipelines</li>
+  </ul>
+</section>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Our Goals and Objectives
+</div>
+
+
+ </div>
+
+
+
+<section data-auto-animate>
+  <ul>
+    <li>Handle Users data</li>
+    <li>Implement Quality Controls</li>
+    <li>Analyse bioinformatics projects </li>
+    <li>Implement NGS analysis pipelines</li>
+    <li>R&D</li>
+  </ul>
+</section>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" data-auto-animate="true" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Our Goals and Objectives
+</div>
+
+
+ </div>
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 100%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<section data-auto-animate> 
+  <ul>
+    <li>Handle Users data</li>
+    <li>Implement Quality Control</li>
+    <li>Analyses projects submitted</li>
+    <li>Implement NGS Analysis Pipelines</li>
+    <li>R&D</li>
+  </ul>
+</section>
+</div>
+
+<div class="" style="position: absolute; left: 50%; top: 0%; height: 100%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="1-Projects/Talks/2024-01-Sequana_Damona/project_2022.png" alt="" style="object-fit: scale-down">
+
+</div>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section ><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+</div>
+
+
+ </div>
+
+
+
+
+## What is a reproducible analysis anyway ?
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Reproducibility crisis
+</div>
+
+
+ </div>
+
+
+
+
+<div class="" style="padding: 0 0px; box-sizing: border-box; position: absolute; left: 5%; top: 10%; height: 20%; width: 80%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+The term *reproducibility crisis* usually refers to:
+</div>
+
+<div class="" style="padding: 0 0px; box-sizing: border-box; position: absolute; left: 5%; top: 35%; height: 20%; width: 25%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+<span style="color:blue; "><u>1</u></span><br>
+<span style="font-size:28px; line-height:1">
+Absence of replication studies</span>
+</div>
+
+<div class="" style="padding: 0 0px; box-sizing: border-box; position: absolute; left: 38%; top: 35%; height: 20%; width: 30%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+<span style="color:blue; "><u>2</u></span><br>
+<span style="font-size:28px; line-height:1">
+failure to reproduce results of published studies
+</span>
+</div>
+
+<div class="" style="padding: 0 0px; box-sizing: border-box; position: absolute; left: 70%; top: 35%; height: 20%; width: 25%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+<span style="color:blue; "><u>3</u></span><br>
+<span style="font-size:28px; line-height:1">Publication bias towards positive results<span>
+</div>
+
+<div class="" style="padding: 0 0px; box-sizing: border-box; position: absolute; left: 20%; top: 55%; height: 40%; width: 25%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+<span style="color:blue; "><u>4</u></span><br>
+<span style="font-size:28px; line-height:1">Questionable research practices</span>
+</div>
+
+<div class="" style="padding: 0 0px; box-sizing: border-box; position: absolute; left: 60%; top: 55%; height: 40%; width: 35%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+<span style="color:blue; "><u>5</u></span><br>
+<span style="font-size:28px; line-height:1">lack of transparency in the methods, data, and analysis</span>
+</div>
+
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+<div class="block">
+
+<span style="font-size:28px">
+https://plato.stanford.edu/entries/scientific-reproducibility/
+<span>
+</div>
+
+
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Replication
+</div>
+
+
+ </div>
+
+
+
+
+
+
+<split even>
+<img src="3-Resources/Talks/Images/oasis.png" alt="" style="width: 850px; height: 600px; object-fit: fill">
+
+<span style="font-size:28px; text-align:justify; margin:1em">
+<br><br><br><br>
+Many papers lack minimal information (data, missing code) required to reproduce their scientific results 
+<br><br>
+Methods, data, software can be provided easily.
+</span>
+</split>
+  
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Data: the FAIR principles
+</div>
+
+
+ </div>
+
+
+
+
+<split even>
+<img src="3-Resources/Talks/Images/fair.png" alt="" style="width: 850px; height: 600px; object-fit: fill">
+
+<span style="font-size:24px; text-align:justify; margin:1em">
+<br><br><br>
+We want to follow the FAIR principles (Findable, Accessible, Interoperable, Reusable)
+<br><br>
+We are not sure how to do that, we may not have the resources ? Sounds complicated
+<br><br>
+ Actually quite simple. 
+<br><br>
+<span>
+(F, A):Use existing resources. Post data on websites (zenodo.org, dataverse, datahub.io)<br>
+(I)  : use existing ontologies<br>
+(R) :  set a license<br>
+</span><!-- .element: class="fragment fade-up" data-fragment-index="2" -->
+<span>
+</split>
+
+
+<div class="" style="font-size: 18px; border: 3px solid; text-align: justify; padding: 5px; top-margin: 0; background-color: #C8F3AD; transform: rotate(0deg); position: absolute; left: 8%; top: 58%; height: 20%; width: 35%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+Wilkinson et al.<br>
+<b>The FAIR guiding principles for scientific data management and stewardship</b><br>
+https://www.nature.com/articles/sdata201618
+</div> <!-- .element: class="fragment fade-up" data-fragment-index="2" -->
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Software complexity
+</div>
+
+
+ </div>
+
+
+
+
+<split even>
+<img src="3-Resources/Talks/Images/data_software_maze.png" alt="" style="width: 800px; height: 600px; object-fit: fill">
+
+<span style="font-size:24px; text-align:justify; margin:1em">
+<br><br><br>
+Software development requires to speak computer languages (923 according to Rosetta Code)
+
+We started with binary language, assembly, then compiled languages (C, C++), and interpreted languages (Python, R), Domain Specific Languages (database, HTML).
+
+Language Models (Chat-GPT)
+<span>
+</split>
+
+<span style="font-size:40px; "></span>
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Software complexity
+</div>
+
+
+ </div>
+
+
+
+
+<split even>
+<img src="3-Resources/Talks/Images/data_software_maze.png" alt="" style="width: 800px; height: 600px; object-fit: fill">
+
+<span style="font-size:24px; text-align:justify; margin:1em">
+<br><br><br>
+In the Sequana project (see later), more than 20 NGS pipelines are available. 
+
+5 different dependencies on average per pipeline (not speaking about Python dependencies), usually requiring compilation and large set of dependencies and instructions.
+
+Each third-party tool has his own life cycle with versions, repositories, etc
+<span>
+</split>
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Software complexity
+</div>
+
+
+ </div>
+
+
+
+
+<split even>
+<img src="3-Resources/Talks/Images/data_software_maze.png" alt="" style="width: 800px; height: 600px; object-fit: fill">
+
+<span style="font-size:24px; text-align:justify; margin:1em">
+<br><br><br>
+In the Sequana project (see later), more than 20 NGS pipelines are available. 
+
+5 different dependencies on average per pipeline (not speaking about Python dependencies), usually requiring compilation and large set of dependencies and instructions.
+
+Each third-party tool has his own life cycle with versions, repositories, etc
+
+Existing Solution:  
+<img src="3-Resources/logos/bioconda.png" alt="" style="width: 300px; height: 80px; object-fit: fill">
+
+<span>
+</split>
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+workflow / pipeline
+</div>
+
+
+ </div>
+
+
+
+
+
+<split even>
+<img src="3-Resources/Talks/Images/question_tag.png" alt="" style="width: 800px; height: 600px; object-fit: fill">
+
+<span style="font-size:24px; text-align:justify; margin:1em">
+<br><br><br>
+There are hundreds of workflow manager from academia and industry
+<br><br>
+Which one shall we use ? What criteria. I’m lost
+<br><br>
+Several have emerged in bioinformatics: snakemake, nextflow, Galaxy, etc
+<br><br>
+<img src="3-Resources/Talks/Images/citation_snakemake.png" alt="" style="border: 3px solid black; box-sizing: border-box; object-fit: scale-down">
+
+</span>
+</split>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Container
+</div>
+
+
+ </div>
+
+
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 80%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="3-Resources/Talks/Images/container.png" alt="" style="width: 400px; height: 250px; object-fit: fill">
+
+</div>
+
+<div class="" style="position: absolute; left: 50%; top: 10%; height: 80%; width: 3%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="3-Resources/Talks/Images/vertical_line.png" alt="" style="object-fit: scale-down">
+
+</div>
+
+<div class="" style="position: absolute; left: 52%; top: 10%; height: 80%; width: 45%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<span style="font-size:24px; text-align:justify; margin:1em">
+I need a specific software with a given version. I want to make sure it is the same in 5 years. 
+ <br><br>
+My computer may change next year. 
+<br><br>
+The software was installed by someone else, do not remember the version, etc
+<br><br>
+The solution: containers. 
+<br><br>
+The software: docker or singularity/apptainers
+</span>
+</div>
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Container
+</div>
+
+
+ </div>
+
+
+
+
+
+<div class="" style="position: absolute; left: 2%; top: 12%; height: 30%; width: 30%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="3-Resources/Talks/Images/boat_left.png" alt="" style="object-fit: scale-down">
+
+</div>
+
+<div class="" style="position: absolute; left: 37%; top: 38%; height: 25%; width: 25%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="3-Resources/Talks/Images/container.png" alt="" style="object-fit: scale-down">
+
+</div>
+
+<div class="" style="position: absolute; left: 70%; top: 58%; height: 30%; width: 30%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="3-Resources/Talks/Images/boat_right.png" alt="" style="object-fit: scale-down">
+
+</div>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+And yet...
+</div>
+
+
+ </div>
+
+
+
+<div class="" style="position: absolute; left: 1%; top: 12%; height: 80%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="3-Resources/Talks/Images/reprohackaton.png" alt="" style="object-fit: scale-down">
+
+</div>
+
+<div class="" style="position: absolute; left: 50%; top: 10%; height: 30%; width: 45%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<span style="font-size:28px" >Even with containers, same data, same software version, you may still have lots of difference when reproducing results.
+</span>
+</div>
+
+<div class="" style="position: absolute; left: 50%; top: 60%; height: 30%; width: 45%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="3-Resources/Talks/Images/citation_reprohackatons.png" alt="" style="border: 3px solid black; box-sizing: border-box; object-fit: scale-down">
+
+</div>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Why testing is so important
+</div>
+
+
+ </div>
+
+
+
+
+
+<split even>
+<img src="3-Resources/Talks/Images/lindenberg_zeppelin.png" alt="" style="width: 1000px; height: 500px; object-fit: fill">
+
+<span style="font-size:24px; text-align:justify; margin:1em">
+<br><br><br><br><br><br>
+<span style="color:red; font-size:30px">It helps avoid disaster (by discovering
+<br>errors to not reproduce them)
+</span>
+</split>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section></section><section ><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Sequana (<span style="color:red">Sequ</span>ence <span style="color:red">Ana</span>lysis)
+</div>
+
+
+ </div>
+
+
+
+
+<img src="3-Resources/logos/logo_sequana.png" alt="" style="width: 300px; height: 300px; object-fit: fill">
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Sequana (<span style="color:red">Sequ</span>ence <span style="color:red">Ana</span>lysis)
+</div>
+
+
+ </div>
+
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 80%; width: 20%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="3-Resources/logos/logo_python.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+<img src="3-Resources/logos/logo_snakemake.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+<img src="3-Resources/Images/icons/icon_exe.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="" style="text-align: left; font-size: 32px; position: absolute; left: 10%; top: 10%; height: 80%; width: 60%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+Python library <br><a href="https://github.com/sequana/sequana">https://github.com/sequana/sequana </a>
+
+***
+
+A set of NGS pipelines in Snakemake
+
+***
+
+A set of standalone for sequence analysis
+</div>
+
+<div class="" style="font-size: 18px; border: 3px solid; text-align: left; padding: 5px; top-margin: 0; background-color: #C8F3AD; transform: rotate(20deg); position: absolute; left: 62%; top: 21%; height: 20%; width: 35%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<b>Sequana: a Set of Snakemake NGS pipelines</b>, <br>
+Journal of Open Source Software, 2(16), 352, <br>
+Cokelaer et al. (2017)
+</div>
+
+<div class="" style="font-size: 18px; border: 3px solid; text-align: left; padding: 5px; top-margin: 0; background-color: #C8F3AD; transform: rotate(20deg); position: absolute; left: 62%; top: 58%; height: 20%; width: 35%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<b>Sequana Coverage: detetcion and characterization of genomic variations using running median and mixture models</b><br>
+GigaScience, 7 (12), <br>Desvillechabrol et al. (2018)
+</div>
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Sequana Pipelines
+
+</div>
+
+
+ </div>
+
+
+
+
+
+<split left="1" right="1" size="8em" style="margin:10px">
+
+<img src="3-Resources/logos/logo_sequana.png" alt="" style="position: absolute; left: 5%; top: 20%; height: 300px; width: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; object-fit: fill">
+
+
+<span style=" margin:0px; width:100%"> 
+<ul>
+<li> Snakemake framework </li>
+<li> Easy to install </li>
+<li> User Interface for each pipeline</li>
+<li> Ready for production</li>
+<li> Homogen syntax</li>
+<li> Reproducible </li>
+<li> Tunable by Engineers and Researchers</li>
+</ul>
+</span> <!-- .element: style="font-size: 30px; width: 60%; position: absolute; left: 35%; top: 20%; height: 60%; display: flex; flex-direction: column; align-items: center; justify-content: center" -->
+</split>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+pipelines
+</div>
+
+
+ </div>
+
+
+
+
+
+<img src="1-Projects/Talks/2024-01-Sequana_Damona/pipelines_overview.png" alt="" style="width: 800px; height: 450px; object-fit: fill">
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+RNA-seq from raw data to enrichment
+</div>
+
+ 
+ </div>
+
+
+
+
+
+<img src="3-Resources/Talks/Images/rnaseq_analysis_pipeline.png" alt="" style="width: 1200px; height: 490px; object-fit: fill">
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Expert Knowledge rules (Sequana) are tested
+</div>
+
+
+ </div>
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 80%; width: 45%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="rnaseq_pipeline.png" alt="" style="width: 800px; height: 450px; object-fit: fill">
+
+</div>
+
+<div class="" style="border: solid 4px; color: red; position: absolute; left: 23%; top: 60%; height: 8%; width: 14%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+<div class="" style="font-size: 28px; text-align: left; position: absolute; left: 50%; top: 10%; height: 40%; width: 45%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+A rule may be hard-coded with expert-knowledge code (e.g. Sequana code, Python, shell commands, etc)
+</div>
+
+<div class="flex-even" style="font-size: 28px; text-align: left; position: absolute; left: 50%; top: 40%; height: 40%; width: 45%; display: flex; flex-direction: row; align-items: center; justify-content: center" >
+
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Sequana continuous integration.
+</div>
+<img src="3-Resources/Images/icons/tick.png" alt="" style="position: absolute; left: 50%; top: 54%; height: 5%; width: 3%; display: flex; flex-direction: column; align-items: center; justify-content: center; object-fit: fill">
+
+
+<div class="flex-even" style="font-size: 28px; text-align: left; position: absolute; left: 50%; top: 55%; height: 40%; width: 45%; display: flex; flex-direction: row; align-items: center; justify-content: center" >
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Tested every month
+</div>
+<img src="3-Resources/Images/icons/tick.png" alt="" style="position: absolute; left: 50%; top: 69%; height: 5%; width: 3%; display: flex; flex-direction: column; align-items: center; justify-content: center; object-fit: fill">
+
+
+<div class="" style="font-size: 23px; color: red; z-index: 100; position: absolute; left: 80%; top: 60%; height: 70%; width: 3%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<span>Join us on https://github.com/sequana/sequana</span>
+</div>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Third party rules (wrappers) are tested
+</div>
+
+
+ </div>
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 80%; width: 45%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="rnaseq_pipeline.png" alt="" style="width: 800px; height: 450px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="border: solid 4px; color: red; position: absolute; left: 25%; top: 20%; height: 9%; width: 12%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+<div class="" style="font-size: 28px; text-align: left; position: absolute; left: 50%; top: 10%; height: 40%; width: 45%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+A rule is hard-coded in the pipeline OR available within the sequana-wrappers on 
+https://github.com/sequana/sequana-wrappers
+</div>
+
+<div class="flex-even" style="font-size: 28px; text-align: left; position: absolute; left: 50%; top: 40%; height: 40%; width: 45%; display: flex; flex-direction: row; align-items: center; justify-content: center" >
+
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Continuous integration with test and data files for validation.
+</div>
+<img src="3-Resources/Images/icons/tick.png" alt="" style="position: absolute; left: 50%; top: 51%; height: 5%; width: 3%; display: flex; flex-direction: column; align-items: center; justify-content: center; object-fit: fill">
+
+
+<div class="flex-even" style="font-size: 28px; text-align: left; position: absolute; left: 50%; top: 55%; height: 40%; width: 45%; display: flex; flex-direction: row; align-items: center; justify-content: center" >
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Tested every month
+</div>
+<img src="3-Resources/Images/icons/tick.png" alt="" style="position: absolute; left: 50%; top: 69%; height: 5%; width: 3%; display: flex; flex-direction: column; align-items: center; justify-content: center; object-fit: fill">
+
+
+
+<div class="" style="font-size: 23px; color: red; z-index: 100; position: absolute; left: 80%; top: 60%; height: 70%; width: 3%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<span>Join us on https://github.com/sequana/sequana</span>
+</div>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Sequana pipelines are tested
+</div>
+
+
+ </div>
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 80%; width: 45%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="rnaseq_pipeline.png" alt="" style="width: 800px; height: 450px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="border: solid 4px; border-radius: 25px; color: red; position: absolute; left: 0%; top: 10%; height: 78%; width: 45%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+<div class="" style="font-size: 26px; text-align: left; position: absolute; left: 50%; top: 14%; height: 40%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+A Sequana pipeline is a Snakemake pipeline <br> embedded within a Python Package.<br>
+- rnaseq is here: https://github.com/sequana/rnaseq
+- variant calling is here: https://github.com/sequana/variant_calling
+- nanomerge is here https://github.com/sequana/nanomerge
+</div>
+
+<div class="flex-even" style="font-size: 28px; text-align: left; position: absolute; left: 50%; top: 50%; height: 40%; width: 45%; display: flex; flex-direction: row; align-items: center; justify-content: center" >
+
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  Sequana pipelines have their own 
+  test 
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; suite and Continuous integration.
+</div>
+<img src="3-Resources/Images/icons/tick.png" alt="" style="position: absolute; left: 50%; top: 60%; height: 5%; width: 3%; display: flex; flex-direction: column; align-items: center; justify-content: center; object-fit: fill">
+
+
+<div class="flex-even" style="font-size: 28px; text-align: left; position: absolute; left: 50%; top: 60%; height: 40%; width: 45%; display: flex; flex-direction: row; align-items: center; justify-content: center" >
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Tested every month
+</div>
+<img src="3-Resources/Images/icons/tick.png" alt="" style="position: absolute; left: 50%; top: 75%; height: 5%; width: 3%; display: flex; flex-direction: column; align-items: center; justify-content: center; object-fit: fill">
+
+
+<div class="" style="font-size: 23px; color: red; z-index: 100; position: absolute; left: 80%; top: 60%; height: 70%; width: 3%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<span>Join us on https://github.com/sequana/sequana</span>
+</div>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Installation
+</div>
+
+
+ </div>
+
+
+
+
+
+<div class="" style="font-size: 65px; position: absolute; left: 10%; top: 15%; height: 30%; width: 80%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+```bash
+pip install sequana_rnaseq
+pip install sequana_demultiplex
+pip install sequana_variant_calling
+```
+
+</div>
+
+<div class="" style="position: absolute; left: 40%; top: 50%; height: undefined%; width: undefined%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="3-Resources/logos/python_pypi.png" alt="" style="width: 260px; height: 160px; object-fit: fill">
+
+</div>
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+User Interface
+</div>
+
+
+ </div>
+
+
+
+
+Common interface
+
+<split top="1" bottom="1" gap=0 style="font-size:45px">
+
+```bash
+sequana_rnaseq           --input-directory PATH --aligner star
+```
+
+```bash
+sequana_variant_calling  --input-directory PATH --aligner bwa
+```
+
+</split>
+
+Sanity Checks and completion reduces error significantly
+
+```bash
+sequana_rnaseq  --aligner <TAB>
+``` 
+<!-- .element: style="width: 50%" -->
+
+
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Dependencies
+</div>
+
+
+ </div>
+
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 80%; width: 45%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="rnaseq_pipeline.png" alt="" style="width: 800px; height: 450px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="border: solid 4px; color: red; position: absolute; left: 25%; top: 20%; height: 9%; width: 12%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+</div>
+
+<div class="" style="font-size: 26px; text-align: left; position: absolute; left: 50%; top: 14%; height: 40%; width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+How to install third-party tools ?
+
+<ol>
+<li>Do it yourself. Follow the instructions from websites</li>
+<li>Use Bioconda and precompiled librairies (modules on the cluster)</li>
+<li>Use containers</li>
+</ol>
+</div>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Containers
+</div>
+
+
+ </div>
+
+
+
+
+<span style="font-size:28px">
+They should be available somewhere . Are they accessible to the end-users ?
+
+Are they going to be **available** in some years ?
+
+Are they **tested**
+
+Do they have **versions** ?
+
+Is there a common entry point ?
+
+If a container is used in a workflow, can I download the container and test it in another context (for debugging)
+
+</span>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section></section><section ><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Damona
+</div>
+
+
+ </div>
+
+
+
+
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="object-fit: scale-down">
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Motivation
+</div>
+
+
+ </div>
+
+
+
+
+
+<split left="6" right="1" gap="1" style="font-size:30px">
+
+Sequana pipelines are Python packages; dependencies can be handled with virtual environments (conda, pyenv, poetry, etc.)
+
+ <i color="green" class="fas fa-check fa-4x"></i>
+
+</split>
+
+<split left="1" right="6" gap="1" style="font-size:30px">
+
+<i color="orange" class="fa fa-exclamation-triangle fa-3x "></i>
+
+However, pipelines depend on third-party tools. They may be handled through conda.
+
+</split>
+
+
+<split left="6" right="1" gap="1" style="font-size:30px">
+
+Many pipelines lead to headaches even with conda and cause trouble with the balance of  a reproducible environment and agile development. 
+
+<img src="3-Resources/Images/icons/cross.png" alt="" style="width: 10px; height: 80px; object-fit: fill">
+
+</split>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Test case: 2 versions that are incompatible
+</div>
+
+
+ </div>
+
+
+
+
+kraken1 / kraken2 
+
+share files that have the same name but different contents
+
+<img src="3-Resources/Images/icons/cross.png" alt="" style="width: 80px; height: 80px; object-fit: fill">
+
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Test case: 2  incompatible packages
+</div>
+
+
+ </div>
+
+
+
+
+art_illumina / pbsim
+
+incompatible conda dependencies (libX v1 versus libX v2)
+
+<img src="3-Resources/Images/icons/cross.png" alt="" style="width: 80px; height: 80px; object-fit: fill">
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Goals
+</div>
+
+
+ </div>
+
+
+
+
+
+How to remove needs for conda while keeping high reproducibility using containers ?
+ 
+Store container recipes in a common place
+ <!-- .element: class="fragment fade-up" data-fragment-index="1" -->
+ 	
+Provides images on public space with DOI
+ <!-- .element: class="fragment fade-up" data-fragment-index="2" -->
+ 
+A way to install binaries found in the containers in your environment: a container manager
+ <!-- .element: class="fragment fade-up" data-fragment-index="3" -->
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Technologies
+</div>
+
+
+ </div>
+
+
+
+
+<img src="1-Projects/Talks/2024-01-Sequana_Damona/damona_techno.png" alt="" style="width: 650px; height: 750|px; object-fit: fill">
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Example
+</div>
+
+
+ </div>
+
+
+
+
+```
+# Damona itself
+damona create TEST
+damona activate TEST
+damona install fastqc
+damona install kraken:1.1.0
+damona install kraken:2.0.9
+
+```
+<!-- .element: style="width: 50%; font-size: 28px" -->
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Compatible with conda environments
+</div>
+
+
+ </div>
+
+
+
+
+<split left="1" right="1" gap=2>
+
+```
+# conda itself
+conda create --name TEST
+conda activate TEST
+conda install freebayes
+pip install damona
+```
+
+```
+# Damona itself
+damona create TEST
+damona activate TEST
+damona install fastqc
+```
+</split>
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+A word for developers: the recipe 
+</div>
+
+
+ </div>
+
+
+
+
+```bash
+Bootstrap: docker
+From: alpine:3.19
+
+%post
+    apk update &&  apk add unzip
+    apk add ca-certificates &&  update-ca-certificates
+    apk add --update --no-cache ncurses --force-non-repository
+    apk add --no-cache wget g++ make zlib-dev bzip2 bzip2-dev patch bash
+
+    wget https://github.com/chhylp123/hifiasm/archive/refs/tags/0.19.8.tar.gz
+    tar xvfz 0.19.8.tar.gz  &&  cd /hifiasm-0.19.8 &&  make && cp hifiasm /usr/local/bin
+
+    rm -rf /hifiasm-${VERSION}
+    apk del make  g++
+```
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+A word for developers: the build 
+</div>
+
+
+ </div>
+
+
+
+
+```bash
+damona build Singularity.hifiasm_0.19.8
+```
+<!-- .element: style="width: 60%; font-size: 28px" -->
+
+Just calls singularity but checks for version and <br>
+naming conventions
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+A word for developers: the upload
+</div>
+
+
+ </div>
+
+
+
+
+```bash
+damona zenodo-upload hifiasm_0.19.8.img
+```
+<!-- .element: style="width: 60%; font-size: 28px" -->
+
+1. Upload the file on Zenodo 
+2. update the local registry with location, version, filesize
+
+
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Disk usage: share images between environments.
+</div>
+
+
+ </div>
+
+
+
+
+<split left="1" right="1" gap="2">
+
+<div class="callout callout-color2">
+<div class="callout-title">
+<div class="callout-icon">
+
+<i class="fas fa-fire-alt" ></i>
+
+
+</div>
+<div class="callout-title-inner">
+
+Conda
+
+</div>
+</div>
+<div class="callout-content">
+
+My conda working environment is 38Gb.
+
+Contains 11 envs
+
+1 million files
+
+</div>
+</div>
+<!-- .element: style="width: 30%; font-size: 35px" -->
+
+<div class="callout callout-color2">
+<div class="callout-title">
+<div class="callout-icon">
+
+<i class="fas fa-fire-alt" ></i>
+
+
+</div>
+<div class="callout-title-inner">
+
+Damona
+
+</div>
+</div>
+<div class="callout-content">
+
+My damona working environment is 25Gb
+
+Contains 5 envs
+
+370 files (54 containers and 300 binaries).
+
+</div>
+</div>
+<!-- .element: style="width: 30%; font-size: 35px" -->
+</split>
+
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Status
+</div>
+
+
+ </div>
+
+
+
+
+
+<split left="1" right="2" align="left" size="8em">
+
+<img src="Pasted image 20240116131505.png" alt="" style="object-fit: scale-down">
+
+
+<span style="font-size:30px;">
+A manager for singularity/apptainer containers <br><br>
+A a common entry point for recipes and curated containers.<br><br>
+82 containers ( 128 versions) shipping 456 binaries<br><br>
+<a href="https://damona.readthedocs.io"> https://damona.readthedocs.io </a>
+</span>
+
+</split>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Damona FAIRness
+</div>
+
+
+ </div>
+
+
+
+
+
+<img src="1-Projects/Talks/2024-01-Sequana_Damona/table_damona.png" alt="" style="width: 1000px; object-fit: fill">
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+How to contribute
+</div>
+
+
+ </div>
+
+
+
+
+
+- contribute to the damona library itself
+- contribute with new Singularity recipes
+- Use the containers in your pipelines
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section></section><section ><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Damona and Sequana
+</div>
+
+
+ </div>
+
+
+
+
+<div class="" style="position: absolute; left: 5%; top: 20%; height: 60%; width: 40%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="3-Resources/logos/logo_sequana.png" alt="" style="width: 400px; height: 400px; object-fit: fill">
+
+</div>
+
+<i class="fa fa-plus" aria-hidden="true"></i>
+
+<div class="" style="position: absolute; left: 55%; top: 20%; height: 60%; width: 40%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 400px; height: 400px; object-fit: fill">
+
+</div>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Install a Sequana pipeline. Method1 (conda + pip)
+</div>
+
+
+ </div>
+
+
+
+
+
+<split left="1" right="1" gap="1" style="margin:30px">
+
+```
+# Conda
+conda create --name TEST
+conda activate TEST
+
+# install dependency
+conda install -y fastqc 
+
+# install sequana pipeline
+pip install sequana_fastqc
+
+# execute it
+sequana_fastqc &&  cd fastqc && sh fastqc.sh
+```
+
+<span style="font-size:30px; margin-top:80px">
+<ul>
+<li> sequana_fastqc is a Python library but uses the fastqc executable</li>
+<li> fastqc binary can be installed in a conda environment</li>
+</span>
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Install a Sequana pipeline. Method2 (conda + pip + damona)
+</div>
+
+
+ </div>
+
+
+
+
+
+<split right="2" left="1" gap="1" style="margin:30px; font-size:36px">
+
+```
+# Conda
+conda create --name TEST2
+conda activate TEST2
+
+# Damona
+pip install damona
+damona create TEST
+damona activate TEST
+damona install fastqc
+
+# install sequana pipeline
+pip install sequana_fastqc
+
+# execute it
+sequana_fastqc &&  cd fastqc && sh fastqc.sh
+```
+
+<span style="font-size:30px ;margin-top:50px">
+<ul>
+<li>Damona can be installed from pypi website using pip</li>
+<li> works like conda with creation and activation </li>
+<li> fastqc binary can be installed easily (no graph dependency resolving like conda)</li>
+</span>
+
+**We can easily test a container by installing the container and its binaries using Damona.**
+</split>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Install a Sequana pipeline. Method3 (pip + apptainer)
+
+</div>
+
+
+ </div>
+
+
+
+
+
+
+<split right="2" left="1" gap="1" style="margin:30px; font-size:36px">
+
+```
+    # CONDA just to install Python
+    conda create --name TEST2
+    conda activate TEST2
+
+    # install the pipeline
+    pip install sequana_fastqc
+    
+    # use it with apptainers
+    sequana_fastqc --apptainer-prefix ~/images \
+          --use-apptainer
+```
+
+<span style="font-size:30px; text-align:left  ;margin-top:50px">
+With the same virtual environment (e.g. pip freeze), you can reproduce the analysis given it is deterministic. 
+<br>
+Here no need to install Damona, just reuse the containers.
+<br> Sequana downloads containers automatically as well.
+</span>
+
+</split>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section></section><section ><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Conclusion and future directions
+</div>
+
+
+ </div>
+
+
+
+
+
+**Sequana** <br><br>
+<a href="https://github.com/sequana/sequana">https://github.com/sequana/sequana/</a>
+<br><br>
+<span style="background-color:#ffaa11">
+Sequana is a project dedicated to NGS analysis. It provides:
+</span>
+<br>
+<ul>
+<li>A Python library</li>
+<li>Standalone applications</li>
+<li>NGS pipelines</li>
+</ul><!-- .element: style="font-size: 32px" -->
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Conclusion and future directions
+</div>
+
+
+ </div>
+
+
+
+
+**Damona** <br>
+<a href="https://github.com/cokelaer/damona">https://github.com/sequana/damona/</a>
+<br><br>
+<span style="background-color:#ffaa11">
+Damona is a manager for apptainer containers. 
+</span> 
+<br>
+<ul>
+<li> A python library to build, upload and manage containers within conda-like environments.
+<li>It provides 80 containers and 500 registered tools</li>
+<li>It provides common entry for shared apptainer recipes</li>
+</ul><!-- .element: style="font-size: 32px" -->
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section><section data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Conclusion and future directions
+</div>
+
+
+ </div>
+
+
+
+
+
+**Damona and Sequana**
+
+<span style="background-color:#ffaa11">
+<b>Sequana</b> provides NGS pipelines that can be run in a reproductible manner at a very low cost using Damona containers.
+</span>
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 600px; width: 1200px; min-height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" color="white" align="center">
+
+ <div class="block">
+
+Acknowledgments
+
+</div>
+
+
+ </div>
+
+
+
+
+
+
+
+
+Many thanks to:
+
+<span style="font-size:30px">
+Sequana Team<br>
+Drylab of the Biomics Platform<br>
+Members of the Bioinformatics and Biostatistics Hub<br>
+Biomics Collaborators<br>
+</span>
+
+<split even gap=2>
+<img src="2-Areas/Biomics/Images/photo_rania.png" alt="" style="width: 100px; object-fit: fill">
+
+<img src="2-Areas/Biomics/Images/photo_laure.png" alt="" style="width: 100px; object-fit: fill">
+
+<img src="2-Areas/Biomics/Images/photo_etienne.png" alt="" style="width: 100px; object-fit: fill">
+
+</split>
+
+<split even gap=2>
+<img src="3-Resources/logos/IFB.png" alt="" style="width: 100px; height: 50px; object-fit: fill">
+
+<img src="3-Resources/logos/france_genomique.png" alt="" style="width: 100px; height: 50px; object-fit: fill">
+
+<img src="3-Resources/logos/core_for_life.png" alt="" style="width: 100px; height: 50px; object-fit: fill">
+
+</split>
+
+
+
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/sequana_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+
+<div class="" style="position: absolute; left: 95%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+<img src="3-Resources/logos/damona_256x256.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+
+<div class="has-dark-background" style="background-color: black; padding: 0 0; box-sizing: border-box; position: absolute; left: 0%; top: 91%; height: 9%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" , color="white">
+
+###### © 2024 Thomas Cokelaer  
+</div>
+
+
+<div class="" style="position: absolute; left: 80%; top: 82%; height: 10%; width: 20%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
+
+<img src="3-Resources/logos/logo_pasteur.png" alt="" style="width: 100px; height: 100px; object-fit: fill">
+
+</div>
+</div></script></section></div>
+    </div>
+
+    <script src="dist/reveal.js"></script>
+
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script src="plugin/zoom/zoom.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/math/math.js"></script>
+	<script src="plugin/mermaid/mermaid.js"></script>
+	<script src="plugin/chart/chart.min.js"></script>
+	<script src="plugin/chart/plugin.js"></script>
+	<script src="plugin/menu/menu.js"></script>
+	<script src="plugin/customcontrols/plugin.js"></script>
+	<script src="plugin/chalkboard/plugin.js"></script>
+	<script src="plugin/reveal-pointer/pointer.js"></script>
+	<script src="plugin/elapsed-time-bar/elapsed-time-bar.js"></script>
+
+    <script>
+      function extend() {
+        var target = {};
+        for (var i = 0; i < arguments.length; i++) {
+          var source = arguments[i];
+          for (var key in source) {
+            if (source.hasOwnProperty(key)) {
+              target[key] = source[key];
+            }
+          }
+        }
+        return target;
+      }
+
+	  function isLight(color) {
+		let hex = color.replace('#', '');
+
+		// convert #fff => #ffffff
+		if(hex.length == 3){
+			hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`;
+		}
+
+		const c_r = parseInt(hex.substr(0, 2), 16);
+		const c_g = parseInt(hex.substr(2, 2), 16);
+		const c_b = parseInt(hex.substr(4, 2), 16);
+		const brightness = ((c_r * 299) + (c_g * 587) + (c_b * 114)) / 1000;
+		return brightness > 155;
+	}
+
+	var bgColor = getComputedStyle(document.documentElement).getPropertyValue('--r-background-color').trim();
+	var isLight = isLight(bgColor);
+
+	if(isLight){
+		document.body.classList.add('has-light-background');
+	} else {
+		document.body.classList.add('has-dark-background');
+	}
+
+      // default options to init reveal.js
+      var defaultOptions = {
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'default', // none/fade/slide/convex/concave/zoom
+        plugins: [
+          RevealMarkdown,
+          RevealHighlight,
+          RevealZoom,
+          RevealNotes,
+          RevealMath.MathJax3,
+		  RevealMermaid,
+		  RevealChart,
+		  RevealCustomControls,
+		  RevealMenu,
+	      RevealPointer,
+		  RevealChalkboard, 
+		  ElapsedTimeBar
+        ],
+
+
+    	allottedTime: 120 * 1000,
+
+		mathjax3: {
+			mathjax: 'plugin/math/mathjax/tex-mml-chtml.js',
+		},
+		markdown: {
+		  gfm: true,
+		  mangle: true,
+		  pedantic: false,
+		  smartLists: false,
+		  smartypants: false,
+		},
+
+		mermaid: {
+			theme: isLight ? 'default' : 'dark',
+		},
+
+		customcontrols: {
+			controls: [
+				{id: 'toggle-overview',
+				title: 'Toggle overview (O)',
+				icon: '<i class="fa fa-th"></i>',
+				action: 'Reveal.toggleOverview();'
+				},
+				{ icon: '<i class="fa fa-pen-square"></i>',
+				title: 'Toggle chalkboard (B)',
+				action: 'RevealChalkboard.toggleChalkboard();'
+				},
+				{ icon: '<i class="fa fa-pen"></i>',
+				title: 'Toggle notes canvas (C)',
+				action: 'RevealChalkboard.toggleNotesCanvas();'
+				},
+			]
+		},
+		menu: {
+			loadIcons: false
+		}
+      };
+
+      // options from URL query string
+      var queryOptions = Reveal().getQueryHash() || {};
+
+      var options = extend(defaultOptions, {"width":1200,"height":"600","margin":0,"controls":true,"progress":true,"slideNumber":"true","transition":"convex","transitionSpeed":"default"}, queryOptions);
+    </script>
+
+    <script>
+      Reveal.initialize(options);
+    </script>
+  </body>
+
+  <!-- created with Advanced Slides -->
+</html>
