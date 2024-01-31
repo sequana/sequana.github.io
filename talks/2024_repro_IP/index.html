@@ -259,7 +259,7 @@ The Drylab of the Biomics platform
 
 <div class="" style="position: absolute; left: 60%; top: 3%; height: 60%; width: 30%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
 
-<img src="1-Projects/Talks/2024-01-Biomics/images/runs_2012_2023.png" alt="" style="width: 500px; object-fit: fill">
+<img src="1-Projects/Talks/2024-01-Sequana_Damona/runs_2012_2023 1.png" alt="" style="width: 500px; object-fit: fill">
 
 </div>
 
@@ -1617,7 +1617,7 @@ Expert Knowledge rules (Sequana) are tested
 
 <div class="" style="position: absolute; left: 0%; top: 10%; height: 80%; width: 45%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
 
-<img src="rnaseq_pipeline.png" alt="" style="width: 800px; height: 450px; object-fit: fill">
+<img src="images/rnaseq_pipeline.png" alt="" style="width: 800px; height: 450px; object-fit: fill">
 
 </div>
 
@@ -1693,7 +1693,7 @@ Third party rules (wrappers) are tested
 
 <div class="" style="position: absolute; left: 0%; top: 10%; height: 80%; width: 45%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
 
-<img src="rnaseq_pipeline.png" alt="" style="width: 800px; height: 450px; object-fit: fill">
+<img src="images/rnaseq_pipeline.png" alt="" style="width: 800px; height: 450px; object-fit: fill">
 
 </div>
 
@@ -1772,7 +1772,7 @@ Sequana pipelines are tested
 
 <div class="" style="position: absolute; left: 0%; top: 10%; height: 80%; width: 45%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
 
-<img src="rnaseq_pipeline.png" alt="" style="width: 800px; height: 450px; object-fit: fill">
+<img src="images/rnaseq_pipeline.png" alt="" style="width: 800px; height: 450px; object-fit: fill">
 
 </div>
 
@@ -1982,7 +1982,7 @@ Dependencies
 
 <div class="" style="position: absolute; left: 0%; top: 10%; height: 80%; width: 45%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
 
-<img src="rnaseq_pipeline.png" alt="" style="width: 800px; height: 450px; object-fit: fill">
+<img src="images/rnaseq_pipeline.png" alt="" style="width: 800px; height: 450px; object-fit: fill">
 
 </div>
 
@@ -2638,14 +2638,19 @@ A word for developers: the upload
 
 
 
+Upload the file on zenodo:
+
 ```bash
 damona zenodo-upload hifiasm_0.19.8.img
 ```
 <!-- .element: style="width: 60%; font-size: 28px" -->
+This updates a local registry file with URL and version. You may annotate with binaries to be found in the container.
 
-1. Upload the file on Zenodo 
-2. update the local registry with location, version, filesize
-
+From there, you can simply type:
+```bash
+damona install hifiasm
+```
+<!-- .element: style="width: 60%; font-size: 28px" -->
 
 
 
@@ -2793,7 +2798,7 @@ Status
 
 <split left="1" right="2" align="left" size="8em">
 
-<img src="Pasted image 20240116131505.png" alt="" style="object-fit: scale-down">
+<img src="images/damona.png" alt="" style="object-fit: scale-down">
 
 
 <span style="font-size:30px;">
@@ -3014,13 +3019,13 @@ pip install sequana_fastqc
 sequana_fastqc &&  cd fastqc && sh fastqc.sh
 ```
 
-<span style="font-size:30px; margin-top:80px">
-<ul>
-<li> sequana_fastqc is a Python library but uses the fastqc executable</li>
-<li> fastqc binary can be installed in a conda environment</li>
+<span style="font-size:36px">
+<i color="orange" class="fa fa-exclamation-triangle fa-2x "></i>
+versions are missing
+
+<i color="red" class="fa fa-times fa-2x "></i>
+pre-compiled fastqc different from one platform to the other.
 </span>
-
-
 
 
 <div class="" style="position: absolute; left: 0%; top: 0%; height: 10%; width: 5%; display: flex; flex-direction: column; align-items: flex-end; justify-content: space-evenly" align="right">
@@ -3075,23 +3080,27 @@ conda activate TEST2
 pip install damona
 damona create TEST
 damona activate TEST
-damona install fastqc
+damona install fastqc:0.11.9
 
 # install sequana pipeline
-pip install sequana_fastqc
+pip install "sequana_fastqc==1.8.1"
 
 # execute it
 sequana_fastqc &&  cd fastqc && sh fastqc.sh
 ```
 
-<span style="font-size:30px ;margin-top:50px">
-<ul>
-<li>Damona can be installed from pypi website using pip</li>
-<li> works like conda with creation and activation </li>
-<li> fastqc binary can be installed easily (no graph dependency resolving like conda)</li>
+
+<span style="font-size:36px">
+<i color="green" class="fa fa-check fa-2x "></i>
+versions set
+
+<i color="green" class="fa fa-check fa-2x "></i>
+container with damona so fastqc is the same
 </span>
 
-**We can easily test a container by installing the container and its binaries using Damona.**
+<i color="orange" class="fa fa-exclamation-triangle fa-2x "></i>
+Looks more complicated ?
+
 </split>
 
 
@@ -3147,18 +3156,24 @@ Install a Sequana pipeline. Method3 (pip + apptainer)
     conda activate TEST2
 
     # install the pipeline
-    pip install sequana_fastqc
-    
+    pip install "sequana_fastqc==1.8.1"
+        
     # use it with apptainers
     sequana_fastqc --apptainer-prefix ~/images \
           --use-apptainer
 ```
 
+<span style="font-size:36px">
+<i color="green" class="fa fa-check fa-2x "></i>
+versions set, no conda requirements, no damona install, no fastqc install.
+
+<i color="green" class="fa fa-check fa-2x "></i>
+easy
+</span>
+
 <span style="font-size:30px; text-align:left  ;margin-top:50px">
+<i color="green" class="fa fa-thumbs-up fa-2x" aria-hidden="true"></i>
 With the same virtual environment (e.g. pip freeze), you can reproduce the analysis given it is deterministic. 
-<br>
-Here no need to install Damona, just reuse the containers.
-<br> Sequana downloads containers automatically as well.
 </span>
 
 </split>
@@ -3262,9 +3277,10 @@ Conclusion and future directions
 
 
 **Damona** <br>
-<a href="https://github.com/cokelaer/damona">https://github.com/sequana/damona/</a>
+<a href="https://github.com/cokelaer/damona">https://github.com/cokelaer/damona/</a>
 <br><br>
 <span style="background-color:#ffaa11">
+
 Damona is a manager for apptainer containers. 
 </span> 
 <br>
@@ -3320,7 +3336,7 @@ Conclusion and future directions
 **Damona and Sequana**
 
 <span style="background-color:#ffaa11">
-<b>Sequana</b> provides NGS pipelines that can be run in a reproductible manner at a very low cost using Damona containers.
+<b>Sequana</b> provides NGS pipelines that can be run in a reproductible thanks to containers hosted within the Damona projects.
 </span>
 
 
