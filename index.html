@@ -5,19 +5,19 @@ use-site-title: true
 ---
 <div class="blurb">
 	<h1>Sequana: a set of NGS pipelines</h1>
-	<p>This page is used as an additional set of resources for
-		the Sequana project. Sequana is made of a Python library whose 
-        documentation is available on <a href="http://sequana.readthedocs.org">readthedocs</a>.
-        Source code of the Python library is available on 
-		<a href="http://github.com/sequana/sequana">github</a>.</p>
+	<p>This page serves as an additional set of resources for
+		the Sequana project. Sequana is comprised of a Python library, the 
+        documentation of which is accessible on <a href="http://sequana.readthedocs.org">Read The Docs</a>.
+        The source code for the Python library can be found on 
+		<a href="http://github.com/sequana/sequana">GitHub</a>.</p>
 
-    <p>One of the main purpose of the Sequana project is to provide a set of NGS pipelines.
-    Pipelines currently available are on pypi and <a
-      href="https://github.com/sequana/sequana">sequana github organisation page</a>. They have their own repository.
-For example the RNA-seq pipeline is available on <a href="https://github.com/sequana/rnaseq">sequana/rnaseq</a>.
+    <p>One of the primary objevtive of the Sequana project is to offer a collection of NGS pipelines.
+    The pipelines currently available are locatd on PyPI and the <a
+      href="https://github.com/sequana/sequana">Sequana GitHub organisation page</a>,
+   each having their own repository. For instance, the RNA-seq pipeline can be found at <a href="https://github.com/sequana/rnaseq">sequana/rnaseq</a>.
 
 	<div>
-    This page is also a place to provide complementary information to the main repositories.
+    This page is also a place for providing supplementary information to the main repositories.
     </div>
 
     <h2>Talks</h2>
@@ -27,8 +27,23 @@ For example the RNA-seq pipeline is available on <a href="https://github.com/seq
         </ul>
     </div>
 
+    <h2> Applications </h2>
+
+<h3> Check your Illumina Sample Sheet</h3>
+ <iframe
+                    loading="lazy"
+                    src="https://check-my-sample-sheet.streamlit.app/?embed=true"
+                    style="
+                        width: 100%;
+                        border: solid 2px;
+                        margin-bottom: 1rem;
+                        height: 450px
+                    "
+                    allow="camera;clipboard-read;clipboard-write;"
+                ></iframe>
+
     <h2> Report examples (click on the image)</h2>
-    The following was generatd with the Sequana Coverage standalone application. This is a bit out-dated but gives you an idea of what pipelines can do . 
+    The following was generated with the Sequana Coverage standalone application and keep here a it is reference in other places. This is the coverage along a virus genome where the black dot line represent the coverage, the blue is the median coverage, and red lines are the top and bottow thresholds for detecting event of interest.
     <div class="change">
         <a href="examples/coverage_virus/coverage_mapping.chrom1.html">
         <img src="images/coverage.png"></img></a>
