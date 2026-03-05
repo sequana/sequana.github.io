@@ -2,3 +2,85 @@
 ---
 
 @import 'jekyll-theme-cayman';
+
+/* Pipeline cards grid */
+.pipeline-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.pipeline-card {
+  flex: 1 1 280px;
+  max-width: 360px;
+  border: 1px solid #d1d5da;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.pipeline-card-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  background: #e8f4f8;
+  display: block;
+}
+
+.pipeline-card-body {
+  padding: 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.pipeline-card-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 0 0 0.4rem;
+  color: #159957;
+}
+
+.pipeline-card-desc {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0 0 0.8rem;
+  flex: 1;
+}
+
+.pipeline-card-links {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.pipeline-card-links a {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.pipeline-card-links .btn-github {
+  background: #24292e;
+  color: #fff;
+}
+
+.pipeline-card-links .btn-github:hover {
+  background: #444d56;
+}
+
+.pipeline-card-links .btn-docs {
+  background: #159957;
+  color: #fff;
+}
+
+.pipeline-card-links .btn-docs:hover {
+  background: #107a45;
+}
