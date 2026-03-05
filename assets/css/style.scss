@@ -3,7 +3,43 @@
 
 @import 'jekyll-theme-cayman';
 
-/* Pipeline cards grid */
+/* ── Shared card-button styles ───────────────────────────────────────────── */
+.pipeline-card-links a,
+.tool-card-links a,
+.subcmd-card-links a {
+  display: inline-block;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.pipeline-card-links .btn-github,
+.tool-card-links .btn-github,
+.subcmd-card-links .btn-github {
+  background: #24292e;
+  color: #fff;
+}
+
+.pipeline-card-links .btn-github:hover,
+.tool-card-links .btn-github:hover,
+.subcmd-card-links .btn-github:hover {
+  background: #444d56;
+}
+
+.pipeline-card-links .btn-docs,
+.tool-card-links .btn-docs,
+.subcmd-card-links .btn-docs {
+  background: #159957;
+  color: #fff;
+}
+
+.pipeline-card-links .btn-docs:hover,
+.tool-card-links .btn-docs:hover,
+.subcmd-card-links .btn-docs:hover {
+  background: #107a45;
+}
+
+/* ── Pipeline cards grid ─────────────────────────────────────────────────── */
 .pipeline-grid {
   display: flex;
   flex-wrap: wrap;
@@ -59,28 +95,128 @@
 }
 
 .pipeline-card-links a {
-  display: inline-block;
   padding: 0.3rem 0.7rem;
-  border-radius: 4px;
   font-size: 0.85rem;
+}
+
+/* ── Published-tool cards (similar to pipeline cards with DOI badge) ─────── */
+.tool-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.tool-card {
+  flex: 1 1 280px;
+  max-width: 400px;
+  border: 1px solid #d1d5da;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.tool-card-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  background: #e8f4f8;
+  display: block;
+}
+
+.tool-card-body {
+  padding: 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.tool-card-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 0 0 0.3rem;
+  color: #159957;
+}
+
+.tool-card-doi {
+  font-size: 0.8rem;
+  color: #777;
+  margin: 0 0 0.6rem;
+}
+
+.tool-card-doi a {
+  color: #159957;
   text-decoration: none;
-  font-weight: 600;
 }
 
-.pipeline-card-links .btn-github {
-  background: #24292e;
-  color: #fff;
+.tool-card-doi a:hover {
+  text-decoration: underline;
 }
 
-.pipeline-card-links .btn-github:hover {
-  background: #444d56;
+.tool-card-desc {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0 0 0.8rem;
+  flex: 1;
 }
 
-.pipeline-card-links .btn-docs {
-  background: #159957;
-  color: #fff;
+.tool-card-links {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
 }
 
-.pipeline-card-links .btn-docs:hover {
-  background: #107a45;
+.tool-card-links a {
+  padding: 0.3rem 0.7rem;
+  font-size: 0.85rem;
 }
+
+/* ── Unpublished-tool (sub-command) cards ────────────────────────────────── */
+.subcmd-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.subcmd-card {
+  flex: 1 1 220px;
+  max-width: 300px;
+  border: 1px solid #d1d5da;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  background: #f8faf8;
+  display: flex;
+  flex-direction: column;
+}
+
+.subcmd-card-title {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0 0 0.4rem;
+  color: #159957;
+  font-family: monospace;
+}
+
+.subcmd-card-desc {
+  font-size: 0.88rem;
+  color: #555;
+  flex: 1;
+  margin: 0 0 0.7rem;
+}
+
+.subcmd-card-links {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.subcmd-card-links a {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.82rem;
+}
+
