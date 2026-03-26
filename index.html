@@ -20,7 +20,7 @@ use-site-title: true
     This page is also a place for providing supplementary information to the main repositories.
     </div>
 
-    <h2>Pipelines</h2>
+    <h2 id="pipelines">Pipelines</h2>
     <p>Sequana provides a collection of NGS pipelines. Each pipeline lives in its own repository on the
     <a href="https://github.com/sequana">Sequana GitHub organisation</a>. Below are some highlighted pipelines:</p>
 
@@ -29,8 +29,8 @@ use-site-title: true
       <!-- sequana_fastqc -->
       <div class="pipeline-card">
         <img class="pipeline-card-image"
-             src="images/pipeline_fastqc_placeholder.svg"
-             alt="sequana_fastqc pipeline diagram placeholder"/>
+             src="images/pipeline_fastqc_overview.png"
+             alt="sequana_fastqc pipeline overview"/>
         <div class="pipeline-card-body">
           <div class="pipeline-card-title">sequana_fastqc</div>
           <div class="pipeline-card-desc">
@@ -58,8 +58,8 @@ use-site-title: true
       <!-- sequana_rnaseq -->
       <div class="pipeline-card">
         <img class="pipeline-card-image"
-             src="images/pipeline_rnaseq_placeholder.svg"
-             alt="sequana_rnaseq pipeline diagram placeholder"/>
+             src="images/pipeline_rnaseq_overview.png"
+             alt="sequana_rnaseq pipeline overview"/>
         <div class="pipeline-card-body">
           <div class="pipeline-card-title">sequana_rnaseq</div>
           <div class="pipeline-card-desc">
@@ -145,6 +145,33 @@ use-site-title: true
         </div>
       </div>
 
+      <!-- sequana_multitax -->
+      <div class="pipeline-card">
+        <img class="pipeline-card-image"
+             src="images/pipeline_multitax_dag.png"
+             alt="sequana_multitax pipeline DAG"/>
+        <div class="pipeline-card-body">
+          <div class="pipeline-card-title">sequana_multitax</div>
+          <div class="pipeline-card-desc">
+            A taxonomic classification pipeline that runs multiple classifiers (Kraken2, Centrifuge, etc.)
+            on sequencing reads, merges results, and produces comparative summary reports.
+          </div>
+          <div class="pipeline-card-links">
+            <a class="btn-github"
+               href="https://github.com/sequana/multitax"
+               target="_blank" rel="noopener noreferrer">&#128279; GitHub</a>
+            <a class="btn-docs"
+               href="https://github.com/sequana/multitax#readme"
+               target="_blank" rel="noopener noreferrer">&#128214; README</a>
+            <a href="https://github.com/sequana/multitax"
+               target="_blank" rel="noopener noreferrer">
+              <img src="https://img.shields.io/github/stars/sequana/multitax?style=flat&label=⭐"
+                   alt="GitHub stars" style="vertical-align:middle;"/>
+            </a>
+          </div>
+        </div>
+      </div>
+
       <!-- sequana_demultiplex -->
       <div class="pipeline-card">
         <img class="pipeline-card-image"
@@ -177,9 +204,10 @@ use-site-title: true
 
     </div>
 
-    <h2>Published Tools</h2>
-    <p>The following tools have been published in peer-reviewed journals. Each tool is also available
-    as a standalone application within the Sequana Python library.</p>
+    <h2 id="tools">Tools &amp; Standalone Applications</h2>
+    <p>Sequana ships published tools and a set of standalone sub-commands invocable directly from
+    the command line (<code>sequana &lt;subcommand&gt;</code>), all distributed as part of the
+    <a href="https://github.com/sequana/sequana">sequana Python package</a>.</p>
 
     <div class="tool-grid">
 
@@ -192,15 +220,13 @@ use-site-title: true
           <div class="tool-card-title">Sequana Coverage</div>
           <div class="tool-card-doi">
             Published in <em>GigaScience</em> &mdash;
-            DOI: <a href=" https://doi.org/10.1093/gigascience/giy110"
+            DOI: <a href="https://doi.org/10.1093/gigascience/giy110"
                     target="_blank" rel="noopener noreferrer">10.1093/gigascience/giy110</a>
           </div>
           <div class="tool-card-desc">
-            A standalone tool and Python library for fast detection of genomic regions with
-            abnormal depth of coverage. It models coverage with a mixture of distributions,
-            highlights regions of interest (deletions, duplications, low-complexity regions),
-            and produces interactive HTML reports suitable for quality control of whole-genome
-            sequencing data.
+            Fast detection of genomic regions with abnormal depth of coverage. Models coverage
+            with a mixture of distributions, highlights deletions, duplications, and
+            low-complexity regions, and produces interactive HTML reports.
           </div>
           <div class="tool-card-links">
             <a class="btn-github"
@@ -208,7 +234,7 @@ use-site-title: true
                target="_blank" rel="noopener noreferrer">&#128279; GitHub</a>
             <a class="btn-docs"
                href="https://sequana.readthedocs.io/en/latest/coverage.html"
-               target="_blank" rel="noopener noreferrer">&#128214; Documentation</a>
+               target="_blank" rel="noopener noreferrer">&#128214; Docs</a>
           </div>
         </div>
       </div>
@@ -226,11 +252,9 @@ use-site-title: true
                     target="_blank" rel="noopener noreferrer">10.1093/bioinformatics/bty034</a>
           </div>
           <div class="tool-card-desc">
-            A desktop graphical user interface (GUI) built with PyQt5 that lets users configure
-            and execute Snakemake-based bioinformatics pipelines without writing a single line of
-            code. Sequanix dynamically introspects a pipeline's configuration file, renders
-            appropriate input widgets, validates parameters, and monitors pipeline progress in
-            real time — dramatically lowering the barrier for non-expert users.
+            Desktop GUI (PyQt5) for configuring and executing Snakemake pipelines without writing
+            code. Dynamically renders widgets from config files and monitors pipeline progress
+            in real time.
           </div>
           <div class="tool-card-links">
             <a class="btn-github"
@@ -238,102 +262,89 @@ use-site-title: true
                target="_blank" rel="noopener noreferrer">&#128279; GitHub</a>
             <a class="btn-docs"
                href="https://sequana.readthedocs.io/en/latest/sequanix.html"
-               target="_blank" rel="noopener noreferrer">&#128214; Documentation</a>
+               target="_blank" rel="noopener noreferrer">&#128214; Docs</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- sequana taxonomy subcmd -->
+      <div class="tool-card tool-card--subcmd">
+        <div class="tool-card-body">
+          <div class="tool-card-title"><code>sequana taxonomy</code></div>
+          <div class="tool-card-desc">
+            Taxonomic classification of reads using Kraken2, with summary plots for
+            metagenomics studies.
+          </div>
+          <div class="tool-card-links">
+            <a class="btn-docs" href="https://sequana.readthedocs.io/en/latest/tutorial.html"
+               target="_blank" rel="noopener noreferrer">&#128214; Docs</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- sequana summary subcmd -->
+      <div class="tool-card tool-card--subcmd">
+        <div class="tool-card-body">
+          <div class="tool-card-title"><code>sequana summary</code></div>
+          <div class="tool-card-desc">
+            Summary statistics (read counts, GC content, quality metrics) for FASTQ files
+            without running a full pipeline.
+          </div>
+          <div class="tool-card-links">
+            <a class="btn-docs" href="https://sequana.readthedocs.io/en/latest/applications.html"
+               target="_blank" rel="noopener noreferrer">&#128214; Docs</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- sequana enrichment subcmd -->
+      <div class="tool-card tool-card--subcmd">
+        <div class="tool-card-body">
+          <div class="tool-card-title"><code>sequana enrichment</code></div>
+          <div class="tool-card-desc">
+            Gene Ontology and KEGG pathway enrichment analysis on differentially expressed
+            genes, with interactive visualisations.
+          </div>
+          <div class="tool-card-links">
+            <a class="btn-docs" href="https://sequana.readthedocs.io/en/latest/applications.html"
+               target="_blank" rel="noopener noreferrer">&#128214; Docs</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- sequana samplesheet subcmd -->
+      <div class="tool-card tool-card--subcmd">
+        <div class="tool-card-body">
+          <div class="tool-card-title"><code>sequana samplesheet</code></div>
+          <div class="tool-card-desc">
+            Validate and convert Illumina sample-sheet files, catching formatting errors before
+            demultiplexing.
+          </div>
+          <div class="tool-card-links">
+            <a class="btn-docs" href="https://sequana.readthedocs.io/en/latest/applications.html"
+               target="_blank" rel="noopener noreferrer">&#128214; Docs</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- sequana gtf_fixer subcmd -->
+      <div class="tool-card tool-card--subcmd">
+        <div class="tool-card-body">
+          <div class="tool-card-title"><code>sequana gtf_fixer</code></div>
+          <div class="tool-card-desc">
+            Fix common inconsistencies in GTF/GFF annotation files so they are compatible with
+            downstream RNA-seq tools.
+          </div>
+          <div class="tool-card-links">
+            <a class="btn-docs" href="https://sequana.readthedocs.io/en/latest/applications.html"
+               target="_blank" rel="noopener noreferrer">&#128214; Docs</a>
           </div>
         </div>
       </div>
 
     </div>
 
-    <h2>Unpublished Tools</h2>
-    <p>In addition to its NGS pipelines, Sequana ships a set of standalone sub-commands that can be
-    invoked directly from the command line (<code>sequana &lt;subcommand&gt;</code>). These tools
-    cover common NGS utility tasks and are distributed as part of the
-    <a href="https://github.com/sequana/sequana">sequana Python package</a>.</p>
-
-    <div class="subcmd-grid">
-
-      <div class="subcmd-card">
-        <div class="subcmd-card-title">sequana coverage</div>
-        <div class="subcmd-card-desc">
-          Analyse the depth of coverage of a BAM/BED file across an entire genome or targeted
-          regions, detect abnormal coverage regions, and generate an interactive HTML report.
-        </div>
-        <div class="subcmd-card-links">
-          <a class="btn-docs"
-             href="https://sequana.readthedocs.io/en/latest/coverage.html"
-             target="_blank" rel="noopener noreferrer">&#128214; Docs</a>
-        </div>
-      </div>
-
-      <div class="subcmd-card">
-        <div class="subcmd-card-title">sequana taxonomy</div>
-        <div class="subcmd-card-desc">
-          Perform taxonomic classification of sequencing reads using Kraken2 or other back-ends
-          and produce summary plots and reports for metagenomics studies.
-        </div>
-        <div class="subcmd-card-links">
-          <a class="btn-docs"
-             href="https://sequana.readthedocs.io/en/latest/tutorial.html"
-             target="_blank" rel="noopener noreferrer">&#128214; Docs</a>
-        </div>
-      </div>
-
-      <div class="subcmd-card">
-        <div class="subcmd-card-title">sequana summary</div>
-        <div class="subcmd-card-desc">
-          Compute and display summary statistics (read counts, GC content, quality metrics) for
-          one or more FASTQ files without running a full pipeline.
-        </div>
-        <div class="subcmd-card-links">
-          <a class="btn-docs"
-             href="https://sequana.readthedocs.io/en/latest/applications.html"
-             target="_blank" rel="noopener noreferrer">&#128214; Docs</a>
-        </div>
-      </div>
-
-      <div class="subcmd-card">
-        <div class="subcmd-card-title">sequana enrichment</div>
-        <div class="subcmd-card-desc">
-          Perform Gene Ontology (GO) and KEGG pathway enrichment analysis on a list of
-          differentially expressed genes, with interactive visualisations.
-        </div>
-        <div class="subcmd-card-links">
-          <a class="btn-docs"
-             href="https://sequana.readthedocs.io/en/latest/applications.html"
-             target="_blank" rel="noopener noreferrer">&#128214; Docs</a>
-        </div>
-      </div>
-
-      <div class="subcmd-card">
-        <div class="subcmd-card-title">sequana samplesheet</div>
-        <div class="subcmd-card-desc">
-          Validate and convert Illumina sample-sheet files, checking for common formatting errors
-          before demultiplexing with bcl2fastq or similar tools.
-        </div>
-        <div class="subcmd-card-links">
-          <a class="btn-docs"
-             href="https://sequana.readthedocs.io/en/latest/applications.html"
-             target="_blank" rel="noopener noreferrer">&#128214; Docs</a>
-        </div>
-      </div>
-
-      <div class="subcmd-card">
-        <div class="subcmd-card-title">sequana gtf_fixer</div>
-        <div class="subcmd-card-desc">
-          Fix common inconsistencies in GTF/GFF annotation files (missing gene-level entries,
-          non-standard attributes) so they are compatible with downstream RNA-seq tools.
-        </div>
-        <div class="subcmd-card-links">
-          <a class="btn-docs"
-             href="https://sequana.readthedocs.io/en/latest/applications.html"
-             target="_blank" rel="noopener noreferrer">&#128214; Docs</a>
-        </div>
-      </div>
-
-    </div>
-
-    <h2>Talks</h2>
+    <h2 id="talks">Talks</h2>
     <div> 
         <ul>
             <li><a href="https://sequana.github.io/talks/2024_repro_IP/index.html">Sequana and Damona (Jan 2024, Institut Pasteur, Paris)</a></li>
@@ -341,7 +352,7 @@ use-site-title: true
         </ul>
     </div>
 
-    <h2> Applications </h2>
+    <h2 id="applications">Applications</h2>
 
 <h3> Check your Illumina Sample Sheet</h3>
 
