@@ -39,6 +39,19 @@
   background: #107a45;
 }
 
+.pipeline-card-links .btn-report,
+.tool-card-links .btn-report,
+.subcmd-card-links .btn-report {
+  background: #6f42c1;
+  color: #fff;
+}
+
+.pipeline-card-links .btn-report:hover,
+.tool-card-links .btn-report:hover,
+.subcmd-card-links .btn-report:hover {
+  background: #5a32a3;
+}
+
 /* ── Pipeline cards grid ─────────────────────────────────────────────────── */
 .pipeline-grid {
   display: flex;
