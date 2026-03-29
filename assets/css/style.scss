@@ -239,6 +239,13 @@ body {
   flex-wrap: wrap;
 }
 
+.hero-social {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: center;
+  opacity: 0.8;
+}
+
 .hero-btn {
   font-family: var(--font-body);
   font-size: 0.95rem;
